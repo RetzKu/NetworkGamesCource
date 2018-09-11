@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <sstream>
 #include <chrono>
+#include <thread>
 
 #include "MessageCodes.h"
 #include "UserDatabase.h"
@@ -23,6 +24,7 @@ using namespace std;
 
 class Server
 {
+	/*Public Functions*/
 public:
 	Server(string IP, int Port);
 	~Server();
@@ -36,6 +38,11 @@ public:
 	void SendResponse(RakNet::SystemAddress sys, CustomMessages responseID);
 	void BroadcastVar(CustomMessages Var, RakNet::Packet Packet);
 
+	/*Private Functions*/
+	void PongThread();
+	void Pong(RakNet::SystemAddress sys);
+
+	/*Private variables*/
 private:
 	RakNet::Packet* Packet;
 	RakNet::RakPeerInterface* Peer;

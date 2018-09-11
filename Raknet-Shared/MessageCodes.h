@@ -10,6 +10,8 @@ enum CustomMessages
 	LOGIN_ACCEPTED,
 	USERNAME,
 	PLAYER_COORD_UPDATE,
+	PONG,
+	PING,
 };
 
 enum Type

@@ -1,6 +1,5 @@
 #include "Server.h"
 
-
 using namespace RakNet;
 using namespace std;
 
@@ -73,7 +72,25 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		Connections->RemoveUser(Packet);
 		CONSOLE(Packet->guid.ToString() << " Connection lost");
 		break;
+	case PING:
+		CONSOLE("Received Ping, Sending Pong");
+		SendResponse(Packet->systemAddress, PONG);
+		//thread(&Server::SendResponse, this, Packet->systemAddress, PONG).detach();
+		break;
 	}
+}
+
+void Server::PongThread()
+{
+
+}
+
+void Server::Pong(RakNet::SystemAddress sys)
+{
+	this_thread::sleep_for(1s);
+	RakNet::BitStream bs;
+	bs.Write((CustomMessages)CustomMessages::PONG);
+	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, sys, false, 0);
 }
 
 void Server::BroadcastVar(CustomMessages Var, RakNet::Packet Packet)

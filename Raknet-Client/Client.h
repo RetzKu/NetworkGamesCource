@@ -59,6 +59,8 @@ public:
 
 /*PRIVATE FUNCTIONS*/
 private:
+	void PingThread();
+	void Ping();
 	void ClientConnectionUpdate(RakNet::Packet* Packet);
 
 /*PUBLIC VARIABLES*/

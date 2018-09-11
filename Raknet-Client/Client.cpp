@@ -62,6 +62,7 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		HostAddress = Packet->systemAddress;
 		CONSOLE("Connection with server at " << IP << " was succesful");
 		Connected = true;
+		thread(&Client::Ping, this).detach();
 		break;
 	case ID_CONNECTION_LOST:
 		CONSOLE("Connection lost to server at " << IP);
@@ -89,6 +90,34 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		CheckForVar(USERNAME);
 		CONSOLE("Server is asking for username");
 		break;
+	case PONG:
+		CONSOLE("Received Pong, Sending Ping");
+		thread(&Client::Ping, this).detach();
+		break;
+	}
+}
+
+//TODO: tämä hökäle
+void Client::PingThread()
+{
+	/*Start time*/
+	Delta = chrono::system_clock::now();
+	TimeInterval = (int)((1.0 / 60) * 1000);
+
+	while (Connected) //run this thread while client is connected
+	{
+		auto TimeDifference = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - Delta);
+
+		/*Loads packet from peer*/
+		if ((float)TimeDifference.count() > TimeInterval)
+		{
+			Delta += chrono::milliseconds((int)TimeInterval);
+			//TODO: selaa kaikki paketit ilman että se ottaa pakettia pois paketti listalta. Ainoastaan jos se on ping paketti
+			//for (Packet = Peer->Receive())
+			//{
+
+			//}
+		}
 	}
 }
 
@@ -119,6 +148,14 @@ void Client::UsernameChange()
 	Peer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false, 0);
 }
 
+void Client::Ping()
+{
+	this_thread::sleep_for(5s);
+	RakNet::BitStream bs;
+	bs.Write((RakNet::MessageID)CustomMessages::PING);
+	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false, 0);
+}
+
 void Client::CheckForVar(CustomMessages messageID)
 {
 	RakNet::BitStream bs;
@@ -127,6 +164,7 @@ void Client::CheckForVar(CustomMessages messageID)
 	for (Var<int> var : IntVars)
 	{
 		if (var.MessageID == messageID) 
+
 		{
 			wasregisted = true;
 			for (int* i : var.Values)

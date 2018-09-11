@@ -62,7 +62,8 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		HostAddress = Packet->systemAddress;
 		CONSOLE("Connection with server at " << IP << " was succesful");
 		Connected = true;
-		thread(&Client::Ping, this).detach();
+		thread(&Client::PingThread, this).detach();
+		//thread(&Client::Ping, this).detach();
 		break;
 	case ID_CONNECTION_LOST:
 		CONSOLE("Connection lost to server at " << IP);
@@ -92,7 +93,8 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		break;
 	case PONG:
 		CONSOLE("Received Pong, Sending Ping");
-		thread(&Client::Ping, this).detach();
+		//Peer->Ping(HostAddress);
+		//thread(&Client::Ping, this).detach();
 		break;
 	}
 }
@@ -113,6 +115,7 @@ void Client::PingThread()
 		{
 			Delta += chrono::milliseconds((int)TimeInterval);
 			//TODO: selaa kaikki paketit ilman että se ottaa pakettia pois paketti listalta. Ainoastaan jos se on ping paketti
+			//TODO: PushBackPacket + receive;
 			//for (Packet = Peer->Receive())
 			//{
 

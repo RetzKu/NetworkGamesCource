@@ -27,13 +27,16 @@ void Server::ServerStart()
 	Peer->Startup(MaxConnections, SD, 1);
 	Peer->SetMaximumIncomingConnections(MaxConnections);
 	CONSOLE("Starting server at port " << Port);
-	
-	 Delta120 = chrono::system_clock::now();
-	 TimeInterval = (int)((1.0 / 60) * 1000);
+
+	Delta120 = chrono::system_clock::now();
+	TimeInterval = (int)((1.0 / 60) * 1000);
+
+	running = true;
 }
 
 void Server::ServerStop()
 {
+	running = false;
 	RakPeerInterface::DestroyInstance(Peer);
 	delete SD;
 	delete Connections;
@@ -46,10 +49,11 @@ void Server::ServerUpdate()
 	if ((float)Delta.count() > TimeInterval)
 	{
 		Delta120 += chrono::milliseconds((int)TimeInterval);
-		for (Packet = Peer->Receive(); Packet; Peer->DeallocatePacket(Packet), Packet = Peer->Receive())
+
+		for (Packet = Peer->Receive(); Packet; Packet = Peer->Receive())
 		{
-			/*Switch case that lets us check what kind of packet it was*/
 			CheckPacket(*Packet);
+			Peer->DeallocatePacket(Packet);
 		}
 	}
 }
@@ -72,31 +76,30 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		Connections->RemoveUser(Packet);
 		CONSOLE(Packet->guid.ToString() << " Connection lost");
 		break;
-	case PING:
-		CONSOLE("Received Ping, Sending Pong");
-		SendResponse(Packet->systemAddress, PONG);
-		//thread(&Server::SendResponse, this, Packet->systemAddress, PONG).detach();
-		break;
+	case PLAYER_COORD:
+		ReadPlayerCoord(Packet);
+		CONSOLE("")
 	}
-}
-
-void Server::PongThread()
-{
-
-}
-
-void Server::Pong(RakNet::SystemAddress sys)
-{
-	this_thread::sleep_for(1s);
-	RakNet::BitStream bs;
-	bs.Write((CustomMessages)CustomMessages::PONG);
-	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, sys, false, 0);
 }
 
 void Server::BroadcastVar(CustomMessages Var, RakNet::Packet Packet)
 {
 	RakNet::BitStream bs(Packet.data,Packet.length,false);
 	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, Packet.systemAddress, true, 0);
+}
+
+void Server::ReadPlayerCoord(RakNet::Packet* packet)
+{
+	RakNet::BitStream bs(packet->data,packet->length,false);
+	bs.IgnoreBytes(sizeof(RakNet::MessageID));
+
+	int x;
+	int y;
+
+	bs.Read(x);
+	bs.Read(y);
+	//std::cout << "Received: " << x << ", " << y << std::endl;
+	//std::cout << "Received: " << values.C_String() << std::endl;
 }
 
 void Server::SendResponse(RakNet::SystemAddress sys, CustomMessages responseID)

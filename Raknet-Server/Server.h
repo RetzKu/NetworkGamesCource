@@ -39,9 +39,7 @@ public:
 	void BroadcastVar(CustomMessages Var, RakNet::Packet Packet);
 
 	/*Private Functions*/
-	void PongThread();
-	void Pong(RakNet::SystemAddress sys);
-
+	void ReadPlayerCoord(RakNet::Packet* packet);
 	/*Private variables*/
 private:
 	RakNet::Packet* Packet;
@@ -57,6 +55,7 @@ private:
 	int MaxConnections = 10; 
 
 	bool State = true;
+	bool running = false;
 	string Result;
 
 	/*Tickrates*/

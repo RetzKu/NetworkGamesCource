@@ -46,10 +46,11 @@ void Client::Update()
 	if ((float)TimeDifference.count() > TimeInterval)
 	{
 		Delta += chrono::milliseconds((int)TimeInterval);
-		for (Packet = Peer->Receive(); Packet; Peer->DeallocatePacket(Packet), Packet = Peer->Receive())
+		for (Packet = Peer->Receive(); Packet != 0; Packet = Peer->Receive())
 		{
 			/*Switch case that lets us check what kind of packet it was*/
-			ClientConnectionUpdate(Packet);
+			ClientConnectionUpdate(Packet); 
+			Peer->DeallocatePacket(Packet); 
 		}
 	}
 }
@@ -62,8 +63,6 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		HostAddress = Packet->systemAddress;
 		CONSOLE("Connection with server at " << IP << " was succesful");
 		Connected = true;
-		thread(&Client::PingThread, this).detach();
-		//thread(&Client::Ping, this).detach();
 		break;
 	case ID_CONNECTION_LOST:
 		CONSOLE("Connection lost to server at " << IP);
@@ -91,36 +90,6 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		CheckForVar(USERNAME);
 		CONSOLE("Server is asking for username");
 		break;
-	case PONG:
-		CONSOLE("Received Pong, Sending Ping");
-		//Peer->Ping(HostAddress);
-		//thread(&Client::Ping, this).detach();
-		break;
-	}
-}
-
-//TODO: tämä hökäle
-void Client::PingThread()
-{
-	/*Start time*/
-	Delta = chrono::system_clock::now();
-	TimeInterval = (int)((1.0 / 60) * 1000);
-
-	while (Connected) //run this thread while client is connected
-	{
-		auto TimeDifference = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - Delta);
-
-		/*Loads packet from peer*/
-		if ((float)TimeDifference.count() > TimeInterval)
-		{
-			Delta += chrono::milliseconds((int)TimeInterval);
-			//TODO: selaa kaikki paketit ilman että se ottaa pakettia pois paketti listalta. Ainoastaan jos se on ping paketti
-			//TODO: PushBackPacket + receive;
-			//for (Packet = Peer->Receive())
-			//{
-
-			//}
-		}
 	}
 }
 
@@ -149,14 +118,6 @@ void Client::UsernameChange()
 	bs.Write((RakNet::MessageID)USERNAME_FOR_GUID);
 	bs.Write(username);
 	Peer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false, 0);
-}
-
-void Client::Ping()
-{
-	this_thread::sleep_for(5s);
-	RakNet::BitStream bs;
-	bs.Write((RakNet::MessageID)CustomMessages::PING);
-	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false, 0);
 }
 
 void Client::CheckForVar(CustomMessages messageID)

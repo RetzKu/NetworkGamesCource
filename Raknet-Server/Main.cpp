@@ -14,6 +14,10 @@ int main()
 			{
 				Running = false;
 			}
+			if (GetAsyncKeyState(0x41) != 0)
+			{
+				Connection->AskForVariable(PLAYER_COORD, "retzku");
+			}
 		}
 	}
 	delete Connection;

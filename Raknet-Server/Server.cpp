@@ -78,7 +78,8 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		break;
 	case PLAYER_COORD:
 		ReadPlayerCoord(Packet);
-		CONSOLE("")
+		CONSOLE("");
+		break;
 	}
 }
 
@@ -98,7 +99,11 @@ void Server::ReadPlayerCoord(RakNet::Packet* packet)
 
 	bs.Read(x);
 	bs.Read(y);
-	//std::cout << "Received: " << x << ", " << y << std::endl;
+	std::string user = Connections->FindUsername(packet->guid.ToString());
+	if (user != "NONE")
+	{
+		CONSOLE("Received " << x << ", " << y << " From: " << user);
+	}
 	//std::cout << "Received: " << values.C_String() << std::endl;
 }
 

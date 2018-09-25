@@ -5,6 +5,8 @@ int main()
 {
 	Server* Connection = new Server("127.0.0.1", 60000);
 	bool Running = true;
+
+	bool coolDown = false;
 	while (Running)
 	{
 		Connection->ServerUpdate();
@@ -14,9 +16,15 @@ int main()
 			{
 				Running = false;
 			}
-			if (GetAsyncKeyState(0x41) != 0)
+			if (GetAsyncKeyState(0x41) == -32767 && coolDown == false)
 			{
-				Connection->AskForVariable(PLAYER_COORD, "retzku");
+				//Connection->AskForVariable(PLAYER_COORD, "retzku");
+				Connection->RequestFromAll(PLAYER_COORD);
+				coolDown = true;
+			}
+			else 
+			{
+				coolDown = false;
 			}
 		}
 	}

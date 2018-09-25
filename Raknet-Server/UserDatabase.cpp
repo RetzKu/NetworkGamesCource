@@ -40,21 +40,25 @@ std::string UserDatabase::RegisterGuid(const RakNet::Packet* Packet)
 	bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
 	RakNet::RakString Username;
 	bsIN.Read(Username);
-	for (int i = 0; i < Users.size(); i++)
-	{
-		if (Users[i]->ConnectionID == Packet->guid.ToString())
-		{
-			if (Users[i]->Username == Username.C_String())
-			{
-				return "NONE";
-			}
-			else if (Users[i]->Username == "NONE")
-			{
-				Users[i]->Username = Username.C_String();
-			}
-			else { return "NONE"; }
-		}
-	}
+
+	ClientData* targetUser;
+	std::string response = "NONE";
+
+	//for (int i = 0; i < Users.size(); i++)
+	//{
+	//	if (Users[i]->ConnectionID == Packet->guid.ToString())
+	//	{
+	//		if (Users[i]->Username == Username.C_String())
+	//		{
+	//			return "NONE";
+	//		}
+	//		else if (Users[i]->Username == "NONE")
+	//		{
+	//			Users[i]->Username = Username.C_String();
+	//		}
+	//		else { return "NONE"; }
+	//	}
+	//}
 	return Username.C_String();
 }
 

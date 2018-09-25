@@ -34,7 +34,6 @@ void Client::OpenConnection()
 	Peer->SetOccasionalPing(true);
 	Peer->Connect(IP.c_str(),SERVER_PORT, 0, 0);
 
-	std::thread(&Client::UsernameChange, this).detach();
 	Delta = chrono::system_clock::now();
 	TimeInterval = (int)((1.0 / 60) * 1000);
 }
@@ -63,6 +62,7 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		HostAddress = Packet->systemAddress;
 		CONSOLE("Connection with server at " << IP << " was succesful");
 		Connected = true;
+		SendUsernameForServer(this->username);
 		break;
 	case ID_CONNECTION_LOST:
 		CONSOLE("Connection lost to server at " << IP);
@@ -78,7 +78,7 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		CONSOLE("RECEIVED NEW COORDS FOR GUID" << Packet->guid.ToString());
 		break;
 	case LOGIN_ACCEPTED:
-		CONSOLE("Server accepted our username");
+		CONSOLE("Server accepted our username: " << username);
 		LoggedIn = true;
 		break;
 	case LOGIN_FAILED:
@@ -190,13 +190,12 @@ void Client::SetVar(CustomMessages MessageID, std::vector<string*> Vars)
 	this->StringVars.push_back(tmp);
 }
 
-bool Client::SendUsernameForServer(RakNet::RakString username)
+void Client::SendUsernameForServer(RakNet::RakString username)
 {
 	RakNet::BitStream BS;
 	BS.Write((RakNet::MessageID)USERNAME_FOR_GUID);
 	BS.Write(username);
 	Peer->Send(&BS, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false,0);
-	return true;
 }
 void Client::SendBackCoord(RakNet::Packet* P)
 {

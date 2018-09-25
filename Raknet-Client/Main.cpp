@@ -20,20 +20,28 @@ int main()
 	Client* Connection = new Client("127.0.0.1", 60000,"Loyalisti");
 	Connection->OpenConnection();
 
+	/*This is currently placeholder for input. Pretty ugly and holds no value for the future*/
 	WASD* input = new WASD();
+
+	/*We launch new thread that will keep updating values inside WASD class*/
 	std::thread(KeyStateThread,input).detach();
 
-	int x = 1;
+	int x = 1; //Luodaan variablet mitk‰ me halutaan jatkuvasti heitt‰‰ serverille. Aka peliss‰ pelaajan positio esimerkiksi
 	int y = 2;
-	std::vector<int*> cord;
+
+	std::vector<int*> cord; //we create vector containing pointers to values we want to register for variable call from server
 	cord.push_back(&x);
 	cord.push_back(&y);
-	Connection->SetVar(PLAYER_COORD, cord);
+
+  /*we register data inside vector for server call named "PLAYER_COORD".
+	Each time server calls with that enum client will automatically check if it has that enum registered.*/
+	Connection->SetVar(PLAYER_COORD, cord); 
 
 	while (Running)
 	{
 		Connection->Update();
 	}
+
 	Connection->CloseConnection();
 	delete Connection;
 	delete input;

@@ -48,7 +48,7 @@ public:
 	void OpenConnection();
 	void CloseConnection();
 	void RetryConnection();
-	bool SendUsernameForServer(RakNet::RakString username);
+	void SendUsernameForServer(RakNet::RakString username);
 	void SendBackCoord(RakNet::Packet* P);
 	RakNet::RakString GetUsername() { return RakNet::RakString(username);}
 	void UsernameChange();

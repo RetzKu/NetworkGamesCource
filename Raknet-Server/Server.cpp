@@ -69,8 +69,9 @@ void Server::CheckPacket(const RakNet::Packet& P)
 	case USERNAME_FOR_GUID:
 		Result = Connections->RegisterGuid(Packet);
 		CONSOLE(Packet->guid.ToString() << " gave an username " << Result);
-		if (Result != "NONE") {SendResponse(Packet->systemAddress, LOGIN_ACCEPTED);}
-		else {SendResponse(Packet->systemAddress, LOGIN_FAILED); }
+		if (Result == "RECONNECT") { SendResponse(Packet->systemAddress, LOGIN_ACCEPTED); CONSOLE("ID: " << Packet->guid.ToString() << " reconnected"); break; }
+		if (Result == "NONE") { SendResponse(Packet->systemAddress, LOGIN_FAILED); break; }
+		else {SendResponse(Packet->systemAddress, LOGIN_ACCEPTED); }
 		break;
 	case ID_CONNECTION_LOST:
 		Connections->RemoveUser(Packet);
@@ -104,7 +105,6 @@ void Server::ReadPlayerCoord(RakNet::Packet* packet)
 	{
 		CONSOLE("Received " << x << ", " << y << " From: " << user);
 	}
-	//std::cout << "Received: " << values.C_String() << std::endl;
 }
 
 void Server::SendResponse(RakNet::SystemAddress sys, CustomMessages responseID)

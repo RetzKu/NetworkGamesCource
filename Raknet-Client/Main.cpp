@@ -40,6 +40,11 @@ int main()
 	while (Running)
 	{
 		Connection->Update();
+		if (input->D == true)
+		{
+			Connection->SendUsernameForServer("Akit");
+			input->D = false;
+		}
 	}
 
 	Connection->CloseConnection();
@@ -64,6 +69,6 @@ void KeyStateThread(WASD* input)
 
 		if (GetAsyncKeyState(0x53) != 0) { input->S = true; }
 		else { input->S = false; }
-		this_thread::sleep_for(0.01s);
+		this_thread::sleep_for(0.1s);
 	}
 }

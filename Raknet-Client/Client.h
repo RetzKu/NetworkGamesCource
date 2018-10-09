@@ -21,21 +21,6 @@
 
 #define CONSOLE(x) std::cout << x << std::endl;
 
-
-
-
-//typedef struct
-//{
-//	std::vector<float*> Values;
-//	CustomMessages MessageID;
-//}Var;
-//
-//typedef struct
-//{
-//	std::vector<string*> Values;
-//	CustomMessages MessageID;
-//}Var;
-
 using namespace std;
 
 class Client
@@ -72,6 +57,7 @@ public:
 	vector<Var<int>>IntVars;
 	vector<Var<string>> StringVars;
 	vector<Var<float>> FloatVars;
+	vector<MessageType> registeredServerValues;
 	std::thread BackupThread;
 /*PRIVATE VARIABLES*/
 private:

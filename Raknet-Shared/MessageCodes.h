@@ -21,6 +21,14 @@ enum Type
 	FLOAT_TYPE,
 };
 
+struct MessageType
+{
+	MessageType(Type type, CustomMessages MessageID) { this->type; this->MessageID; }
+	MessageType() {};
+	Type type;
+	CustomMessages MessageID;
+};
+
 template <typename T>
 struct Var
 {

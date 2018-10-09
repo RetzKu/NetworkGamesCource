@@ -172,6 +172,9 @@ void Client::SetVar(CustomMessages MessageID, std::vector<int*> Vars)
 	tmp.MessageID = MessageID;
 	tmp.Values = Vars;
 	this->IntVars.push_back(tmp);
+
+	MessageType regType(Type::INT_TYPE,MessageID);
+	registeredServerValues.push_back(regType);
 }
 void Client::SetVar(CustomMessages MessageID, std::vector<float*> Vars)
 {
@@ -180,6 +183,9 @@ void Client::SetVar(CustomMessages MessageID, std::vector<float*> Vars)
 	tmp.MessageID = MessageID;
 	tmp.Values = Vars;
 	this->FloatVars.push_back(tmp);
+
+	MessageType regType(Type::FLOAT_TYPE,MessageID);
+	registeredServerValues.push_back(regType);
 }
 void Client::SetVar(CustomMessages MessageID, std::vector<string*> Vars)
 {
@@ -188,18 +194,22 @@ void Client::SetVar(CustomMessages MessageID, std::vector<string*> Vars)
 	tmp.Values = Vars;
 	tmp.MessageID = MessageID;
 	this->StringVars.push_back(tmp);
-}
 
+	MessageType regType(Type::STRING_TYPE,MessageID);
+	registeredServerValues.push_back(regType);
+}
 void Client::SendUsernameForServer(RakNet::RakString username)
 {
 	RakNet::BitStream BS;
 	BS.Write((RakNet::MessageID)USERNAME_FOR_GUID);
 	BS.Write(username);
+	this->username = username;
 	Peer->Send(&BS, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false,0);
 }
+
 void Client::SendBackCoord(RakNet::Packet* P)
 {
 	RakNet::BitStream bs;
 	bs.Write((MessageID)PLAYER_COORD);
-	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, P->systemAddress, false, 0);
+	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false, 0);
 }

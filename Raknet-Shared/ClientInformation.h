@@ -2,7 +2,7 @@
 #include <string>
 #include <chrono>
 
-#include <Raknet\RakNetTypes.h>
+#include <RakNetTypes.h>
 
 using namespace std;
 

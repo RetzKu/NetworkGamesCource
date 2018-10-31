@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "ClientInformation.h"
-#include <Raknet\BitStream.h>
+#include <BitStream.h>
 
 using namespace std;
 

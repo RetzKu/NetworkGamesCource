@@ -13,10 +13,10 @@
 //#include "Utility.h"
 
 /*Including basic raknet headeres*/
-#include <Raknet\RakPeerInterface.h>
-#include <Raknet\MessageIdentifiers.h>
-#include <Raknet\RakNetTypes.h>
-#include <Raknet\BitStream.h>
+#include <RakPeerInterface.h>
+#include <MessageIdentifiers.h>
+#include <RakNetTypes.h>
+#include <BitStream.h>
 
 #define CONSOLE(x) std::cout << x << std::endl;
 

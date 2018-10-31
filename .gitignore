@@ -1,3 +1,7 @@
-﻿\Output
-\.vs
-/Output
+﻿Output/
+x64/
+Engine/Output
+Engine/Intermediate
+Engine/Dependency/FreeType/x64
+.vs/
+Engine\.vs\

@@ -1,8 +1,9 @@
+#include <RakNetTypes.h>
+
 #include <iostream>
 #include <string>
 #include <chrono>
 
-#include <RakNetTypes.h>
 
 using namespace std;
 

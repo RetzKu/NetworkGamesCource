@@ -7,7 +7,6 @@ using namespace std;
 
 Client::Client(string IP, int Port, const char* username)
 {
-	
 	this->IP = IP;
 	this->SERVER_PORT = Port;
 	this->username = username;

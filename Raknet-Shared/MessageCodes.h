@@ -1,8 +1,9 @@
-#include <MessageIdentifiers.h>
+//#include <MessageIdentifiers.h>
+#include <vector>
 
 enum CustomMessages
 {
-	CHAT_MESSAGE = ID_USER_PACKET_ENUM + 1,
+	//CHAT_MESSAGE = ID_USER_PACKET_ENUM + 1,
 	USERNAME_FOR_GUID,
 	PLAYER_COORD,
 	MOUSE_COORD,

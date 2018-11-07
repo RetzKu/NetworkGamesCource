@@ -72,8 +72,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Output\Engine\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\Engine\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependency\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Dependency\Raknet\lib;$(SolutionDir)\Dependency\GLFW\lib;$(SolutionDir)\Output\FreeType\$(Configuration);$(SolutionDir)\Dependency\Glew\libs;$(SolutionDir)\Dependency\FreeImage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Raknet-Client\;$(SolutionDir)Dependency/Raknet/include/;$(SolutionDir)Raknet-Shared/;$(SolutionDir)Dependency\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependency\Raknet\lib\;$(SolutionDir)\Output\Raknet-Client\;$(SolutionDir)\Dependency\GLFW\lib;$(SolutionDir)\Output\FreeType\$(Configuration);$(SolutionDir)\Dependency\Glew\libs;$(SolutionDir)\Dependency\FreeImage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Output\Engine\$(Configuration)\</OutDir>
@@ -88,9 +88,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glfw3.lib;FreeType.lib;opengl32.lib;glew32s.lib;FreeImage.lib;Raknet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;FreeType.lib;opengl32.lib;glew32s.lib;FreeImage.lib;Raknet-Client.lib;Raknet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

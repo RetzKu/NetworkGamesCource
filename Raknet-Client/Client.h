@@ -1,5 +1,14 @@
 #pragma once
 
+#include "MessageCodes.h"
+#include "ClientInformation.h"
+/*Including basic raknet headeres*/
+#include <RakPeerInterface.h>
+#include <MessageIdentifiers.h>
+#include <RakNetTypes.h>
+#include <BitStream.h>
+
+
 #include <iostream>
 #include <string>
 #include <WinSock2.h>
@@ -9,15 +18,8 @@
 #include <vector>
 #include <chrono>
 
-#include "MessageCodes.h"
-#include "ClientInformation.h"
 //#include "Utility.h"
 
-/*Including basic raknet headeres*/
-#include <RakPeerInterface.h>
-#include <MessageIdentifiers.h>
-#include <RakNetTypes.h>
-#include <BitStream.h>
 
 #define CONSOLE(x) std::cout << x << std::endl;
 
@@ -28,6 +30,7 @@ class Client
 /*PUBLIC FUNCTIONS*/
 public:
 	Client(string IP, int Port,const char* username);
+	//Client(){}
 	~Client();
 	void Update();
 	void OpenConnection();

@@ -1,3 +1,5 @@
+#include <Client.h>
+
 #include "window.h"
 #include <stdio.h>
 #include <windows.h>
@@ -23,6 +25,8 @@
 #include "PhysicsObject.h"
 #include "ClassMath.h"
 
+
+
 // Jos haluat printit päälle, tässä 1, jos et valitse 0
 #define DEBUG 1
 #if DEBUG
@@ -41,7 +45,7 @@ Window* window = new Window("Engine", SCREENWIDTH, SCREENHEIGHT);
 class Game
 {
 public:
-	Game() {}
+	Game() { connection = new Client("127.0.0.1", 60000, "Loyalisti"); }
 	~Game()
 	{
 		if (Layers.size() > 0)
@@ -61,11 +65,14 @@ public:
 			Groups.clear();
 		}
 		delete shader;
+		connection->CloseConnection();
+		delete connection;
 		delete ControlFunktionality;
 	}
 
 	/*USED CLASSES FOR GAMEOBJECT*/
 	Shader* shader;
+	Client* connection;
 	TestClass* ControlFunktionality;
 	std::vector<Layer*> Layers;
 	std::vector<Group*> Groups;
@@ -104,6 +111,7 @@ int main()
 	// Asetetaan ikkunan parametrit
 
 	glClearColor(0,0,0, 1);
+	
 
 	std::cout << "Window Width: " << window->getWidth() << +" Height: " << window->getHeight() << std::endl;
 	InitScene();
@@ -114,6 +122,8 @@ void InitScene()
 {
 	Game* GameStruct = new Game();
 	GameStruct->shader = new Shader("basic.vert", "basic.frag");
+
+	GameStruct->connection->OpenConnection();
 
 	GameStruct->shader->enable();
 	GameStruct->shader->setUniformMat2f("light_pos", vec2(4.0f, 1.5f));
@@ -132,6 +142,7 @@ int SceneLoop(Game* GameObject)
 	std::chrono::time_point<std::chrono::system_clock> DeltaTime = std::chrono::system_clock::now();//start point for deltatime;
 	float TimeInteval = (int)((1.0f / 82.0f) * 1000);//giving deltatime tickrate; this is good until hitting under 60fps; ;
 
+	GameObject->connection->Update();
 	//normaali = N = (x2 - x1) * (x3 - x1) Kuinka lasketaan kappaleen normaali;
 
 	//TODO: font_atlas on luultavasti taas hajalla. FIx this please; Low priority;

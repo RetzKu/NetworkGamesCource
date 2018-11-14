@@ -136,7 +136,6 @@ bool Server::AskForVariable(CustomMessages var, string username)
 	return AskForVariable(var, guidint);
 }
 
-
 void Server::RequestFromAll(CustomMessages Requested)
 {
 	RakNet::BitStream bs;

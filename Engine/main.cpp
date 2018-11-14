@@ -142,7 +142,6 @@ int SceneLoop(Game* GameObject)
 	std::chrono::time_point<std::chrono::system_clock> DeltaTime = std::chrono::system_clock::now();//start point for deltatime;
 	float TimeInteval = (int)((1.0f / 82.0f) * 1000);//giving deltatime tickrate; this is good until hitting under 60fps; ;
 
-	GameObject->connection->Update();
 	//normaali = N = (x2 - x1) * (x3 - x1) Kuinka lasketaan kappaleen normaali;
 
 	//TODO: font_atlas on luultavasti taas hajalla. FIx this please; Low priority;
@@ -153,6 +152,7 @@ int SceneLoop(Game* GameObject)
 	while (!window->closed())
 	{
 		/*Main Loop*/
+		GameObject->connection->Update();
 		window->clear();
 
 		GameObject->ControlFunktionality->GetCameraMovement();

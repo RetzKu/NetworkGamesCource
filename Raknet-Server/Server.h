@@ -10,6 +10,7 @@
 #include "MessageCodes.h"
 #include "UserDatabase.h"
 #include "UserVariables.h"
+#include "GameState.h"
 //#include "Utility.h"
 
 /*Including basic raknet headeres*/

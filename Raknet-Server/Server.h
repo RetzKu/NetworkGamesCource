@@ -39,7 +39,7 @@ public:
 	void SendResponse(RakNet::SystemAddress sys, CustomMessages responseID);
 	void BroadcastVar(CustomMessages Var, RakNet::Packet Packet);
 
-	/*Private Functions*/
+	void ReadPlayerInput(RakNet::Packet* packet);
 	void ReadPlayerCoord(RakNet::Packet* packet);
 	/*Private variables*/
 private:
@@ -50,6 +50,7 @@ private:
 	RakNet::BitStream bsOUT;
 
 	UserDatabase* Connections;
+	GameState serverLogic;
 
 	string IP;
 	int Port;

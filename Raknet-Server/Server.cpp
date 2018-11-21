@@ -68,10 +68,14 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		break;
 	case USERNAME_FOR_GUID:
 		Result = Connections->RegisterGuid(Packet);
-		CONSOLE(Packet->guid.ToString() << " gave an username " << Result);
 		if (Result == "RECONNECT") { SendResponse(Packet->systemAddress, LOGIN_ACCEPTED); CONSOLE("ID: " << Packet->guid.ToString() << " reconnected"); break; }
-		if (Result == "NONE") { SendResponse(Packet->systemAddress, LOGIN_FAILED); break; }
-		else {SendResponse(Packet->systemAddress, LOGIN_ACCEPTED); }
+		if (Result == "NONE") { SendResponse(Packet->systemAddress, LOGIN_FAILED); CONSOLE("ID: " << Packet->guid.ToString() << " failed to give username"); break; }
+		else 
+		{
+			SendResponse(Packet->systemAddress, LOGIN_ACCEPTED);
+			CONSOLE(Packet->guid.ToString() << " gave an username " << Result);
+			serverLogic.AddPlayer(Packet->guid.ToUint32(Packet->guid));
+		}
 		break;
 	case ID_CONNECTION_LOST:
 		Connections->RemoveUser(Packet);
@@ -79,7 +83,9 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		break;
 	case PLAYER_COORD:
 		ReadPlayerCoord(Packet);
-		CONSOLE("");
+		break;
+	case PLAYER_INPUT:
+		ReadPlayerInput(Packet);
 		break;
 	}
 }
@@ -107,6 +113,18 @@ void Server::ReadPlayerCoord(RakNet::Packet* packet)
 	}
 }
 
+void Server::ReadPlayerInput(RakNet::Packet* packet)
+{
+	RakNet::BitStream bs(packet->data, packet->length, false);
+	bs.IgnoreBytes(sizeof(RakNet::MessageID));
+	WASD input;
+	bs.Read(input.w);
+	bs.Read(input.a);
+	bs.Read(input.s);
+	bs.Read(input.d);
+	serverLogic.ProcessInput(packet->guid.ToUint32(packet->guid), input);
+}
+
 void Server::SendResponse(RakNet::SystemAddress sys, CustomMessages responseID)
 {
 	RakNet::BitStream bs;
@@ -120,7 +138,7 @@ bool Server::AskForVariable(CustomMessages var, INT64 guid)
 	RakNet::RakNetGUID rakguid;
 	rakguid.FromString(to_string(guid).c_str());
 
-	bs.Write((RakNet::MessageID)PLAYER_COORD);
+	bs.Write((RakNet::MessageID)var);
 	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, rakguid, false, 0);
 	return true;
 }

@@ -35,7 +35,19 @@ struct Player
 	std::string name;
 	int guid;
 	Vec2 position;
+	int velocity;
 	Vec3 color;
+};
+
+struct Ball
+{
+	Vec2 position;
+	Vec2 velocity;
+};
+
+struct WASD
+{
+	int w; int a; int s; int d;
 };
 
 class GameState
@@ -45,14 +57,15 @@ public:
 	GameState();
 	~GameState();
 
-	void AddPlayer(Player player);
+	void AddPlayer(int guid, const char* name);
 	void RemovePlayer(int guid);
 
-	void UpdatePlayerPos(int guid, Vec2 pos);
+	void ProcessInput(int guid, WASD input);
 
 	/*Private Functions*/
 private:
 	Player* FindPlayer(int guid);
+	void UpdatePlayerPos(int guid, Vec2 pos);
 	
 	/*Public Variables*/
 public:

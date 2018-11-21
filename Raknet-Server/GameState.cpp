@@ -9,27 +9,12 @@ GameState::GameState()
 
 GameState::~GameState()
 {
-	//for (Player* playerVar : players)
-	//{
-
-	//}
 	players.clear();
 }
 
-void GameState::AddPlayer(Player player)
+void GameState::AddPlayer(int guid,const char* name)
 {
-	if (playersLeft <= playersRight)
-	{
-		playersLeft += 1;
-		player.position = Vec2(-10, 0);
-	}
-	else
-	{
-		playersRight += 1;
-		player.position = Vec2(10, 0);
-	}
-
-	players.push_back(new Player(player));
+	players.push_back(new Player(name,guid));
 }
 
 
@@ -52,6 +37,12 @@ void GameState::RemovePlayer(int guid)
 	}
 }
 
+
+void GameState::ProcessInput(int guid, WASD input) //Wasd is replaceable
+{
+	
+}
+
 void GameState::UpdatePlayerPos(int guid, Vec2 pos)
 {
 	Player* result = FindPlayer(guid);
@@ -60,7 +51,7 @@ void GameState::UpdatePlayerPos(int guid, Vec2 pos)
 		std::cout << "Could not find player with guid " << guid << std::endl;
 		return;
 	}
-	result->position = pos;
+	result->position.y = pos.y;
 }
 
 

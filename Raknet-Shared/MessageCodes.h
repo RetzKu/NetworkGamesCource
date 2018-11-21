@@ -13,6 +13,7 @@ enum CustomMessages
 	PLAYER_COORD_UPDATE,
 	PONG,
 	PING,
+	PLAYER_INPUT,
 };
 
 enum Type

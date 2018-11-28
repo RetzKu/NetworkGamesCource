@@ -22,6 +22,7 @@ Server::~Server()
 void Server::ServerStart()
 {
 	Peer = RakPeerInterface::GetInstance();
+	serverLogic = GameState();
 	SD = new SocketDescriptor(PORT, 0);
 	/*Creating Instance for server and starting up basic setup*/
 	Peer->Startup(MaxConnections, SD, 1);
@@ -50,6 +51,7 @@ void Server::ServerUpdate()
 	{
 		Delta120 += chrono::milliseconds((int)TimeInterval);
 
+		serverLogic.Tick();
 		for (Packet = Peer->Receive(); Packet; Packet = Peer->Receive())
 		{
 			CheckPacket(*Packet);
@@ -74,7 +76,7 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		{
 			SendResponse(Packet->systemAddress, LOGIN_ACCEPTED);
 			CONSOLE(Packet->guid.ToString() << " gave an username " << Result);
-			serverLogic.AddPlayer(Packet->guid.ToUint32(Packet->guid));
+			serverLogic.AddPlayer(Packet->guid.ToUint32(Packet->guid),Result.c_str());
 		}
 		break;
 	case ID_CONNECTION_LOST:
@@ -117,11 +119,9 @@ void Server::ReadPlayerInput(RakNet::Packet* packet)
 {
 	RakNet::BitStream bs(packet->data, packet->length, false);
 	bs.IgnoreBytes(sizeof(RakNet::MessageID));
-	WASD input;
-	bs.Read(input.w);
-	bs.Read(input.a);
-	bs.Read(input.s);
-	bs.Read(input.d);
+	Vec2 input;
+	bs.Read(input.x);
+	bs.Read(input.y);
 	serverLogic.ProcessInput(packet->guid.ToUint32(packet->guid), input);
 }
 

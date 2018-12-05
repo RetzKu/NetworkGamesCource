@@ -52,6 +52,7 @@ void Server::ServerUpdate()
 		Delta120 += chrono::milliseconds((int)TimeInterval);
 
 		serverLogic.Tick();
+		BroadcastBallPosition();
 		for (Packet = Peer->Receive(); Packet; Packet = Peer->Receive())
 		{
 			CheckPacket(*Packet);
@@ -90,6 +91,21 @@ void Server::CheckPacket(const RakNet::Packet& P)
 		ReadPlayerInput(Packet);
 		break;
 	}
+}
+
+void Server::BroadcastBallPosition()
+{
+	string guid = Connections->FindGuid("Loyalisti");
+	RakNet::RakNetGUID rakguid;
+	rakguid.FromString(guid.c_str());
+
+	RakNet::BitStream bs;
+	Vec2 ballPos = serverLogic.GetBallPos();
+	bs.Write((RakNet::MessageID)BALL_UPDATE);
+	bs.Write(ballPos.x);
+	bs.Write(ballPos.y);
+
+	bool result = Peer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS ,true);
 }
 
 void Server::BroadcastVar(CustomMessages Var, RakNet::Packet Packet)

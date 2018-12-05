@@ -38,8 +38,8 @@ public:
 	void RetryConnection();
 	void SendUsernameForServer(RakNet::RakString username);
 	void SendBackCoord(RakNet::Packet* P);
-	RakNet::RakString GetUsername() { return RakNet::RakString(username);}
-	void UsernameChange();
+	RakNet::RakString GetUsername() { return RakNet::RakString(username.c_str());}
+	void UsernameChange(std::string* username);
 	void CheckForVar(CustomMessages messageID);
 	void SetVar(CustomMessages MessageID, std::vector<string*> Vars);
 	void SetVar(CustomMessages MessageID, std::vector<float*>Vars);
@@ -48,6 +48,7 @@ public:
 /*PRIVATE FUNCTIONS*/
 private:
 	void ClientConnectionUpdate(RakNet::Packet* Packet);
+	void ProcessBallUpdate(RakNet::Packet* packet);
 
 /*PUBLIC VARIABLES*/
 public:
@@ -55,13 +56,16 @@ public:
 	bool LoggedIn = false;
 	string IP;
 	int SERVER_PORT;
-	const char* username;
+	std::string username;
 	bool State = true;
 	vector<Var<int>>IntVars;
 	vector<Var<string>> StringVars;
 	vector<Var<float>> FloatVars;
 	vector<MessageType> registeredServerValues;
 	std::thread BackupThread;
+
+	float ballX;
+	float ballY;
 /*PRIVATE VARIABLES*/
 private:
 

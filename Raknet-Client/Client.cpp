@@ -55,13 +55,17 @@ void Client::Update()
 
 void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 {
+	if (Packet->data[0] != 146)
+	{
+		std::cout << to_string(Packet->data[0]) << std::endl;
+	}
 	switch (Packet->data[0])
 	{
 	case ID_CONNECTION_REQUEST_ACCEPTED:
 		HostAddress = Packet->systemAddress;
 		CONSOLE("Connection with server at " << IP << " was succesful");
 		Connected = true;
-		SendUsernameForServer(this->username);
+		SendUsernameForServer(this->username.c_str());
 		break;
 	case ID_CONNECTION_LOST:
 		CONSOLE("Connection lost to server at " << IP);
@@ -82,12 +86,15 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 		break;
 	case LOGIN_FAILED:
 		CONSOLE("Server did not accept our username");
-		thread(&Client::UsernameChange, this).detach();
+		thread(&Client::UsernameChange, this, &username).detach();
 		LoggedIn = false;
 		break;
 	case USERNAME:
 		CheckForVar(USERNAME);
 		CONSOLE("Server is asking for username");
+		break;
+	case BALL_UPDATE:
+		ProcessBallUpdate(Packet);
 		break;
 	}
 }
@@ -101,17 +108,17 @@ void Client::RetryConnection()
 		Peer->Connect(IP.c_str(),SERVER_PORT, 0, 0);
 		this_thread::sleep_for(10s);
 	}
-	thread(&Client::UsernameChange, this).detach();
+	//thread(&Client::UsernameChange, this).detach();
 }
 
-void Client::UsernameChange()
+void Client::UsernameChange(std::string* username)
 {
 	using namespace chrono_literals;
 	std::this_thread::sleep_for(1s);
 	std::string newusername;
 	std::cout << "Anna username :";
 	cin >> newusername;
-	username = newusername.c_str();
+	*username = newusername;
 	
 	RakNet::BitStream bs;
 	bs.Write((RakNet::MessageID)USERNAME_FOR_GUID);
@@ -211,4 +218,13 @@ void Client::SendBackCoord(RakNet::Packet* P)
 	RakNet::BitStream bs;
 	bs.Write((MessageID)PLAYER_COORD);
 	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, HostAddress, false, 0);
+}
+
+void Client::ProcessBallUpdate(RakNet::Packet* packet)
+{
+	RakNet::BitStream bs(packet->data,packet->length,0);
+	bs.IgnoreBytes(sizeof(RakNet::MessageID));
+
+	bs.Read(ballX);
+	bs.Read(ballY);
 }

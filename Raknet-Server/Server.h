@@ -38,6 +38,7 @@ public:
 	void RequestFromAll(CustomMessages var);
 	void SendResponse(RakNet::SystemAddress sys, CustomMessages responseID);
 	void BroadcastVar(CustomMessages Var, RakNet::Packet Packet);
+	void BroadcastBallPosition();
 
 	void ReadPlayerInput(RakNet::Packet* packet);
 	void ReadPlayerCoord(RakNet::Packet* packet);

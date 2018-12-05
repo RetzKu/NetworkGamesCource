@@ -86,6 +86,7 @@ public:
 	void AddPlayer(int guid, const char* name);
 	void RemovePlayer(int guid);
 
+	Vec2 GetBallPos() { return ball.position; }
 	void ProcessInput(int guid, Vec2 input); //Vec2 acts as input. x = W, y = S;
 	void Tick();
 

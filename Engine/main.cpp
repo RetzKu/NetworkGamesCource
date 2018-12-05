@@ -147,12 +147,16 @@ int SceneLoop(Game* GameObject)
 	//TODO: font_atlas on luultavasti taas hajalla. FIx this please; Low priority;
 	//GameObject->Layers[0]->add(new Label("Test Label", 1, 0, vec4(0.5, 0.5, 0, 1)));
 
-	GameObject->Layers[0]->add(new Sprite(0, 0, 10, 10, new Texture("Pekka2.bmp"), false));
+	Sprite bekkas = Sprite(0, 0, 10, 10, new Texture("Pekka2.bmp"), false);
+	GameObject->Layers[0]->add(&bekkas);
 
 	while (!window->closed())
 	{
 		/*Main Loop*/
 		GameObject->connection->Update();
+		bekkas.position = { GameObject->connection->ballX, GameObject->connection->ballY , 0};
+		//std::cout << GameObject->connection->ballX << " " << GameObject->connection->ballY << std::endl;
+
 		window->clear();
 
 		GameObject->ControlFunktionality->GetCameraMovement();

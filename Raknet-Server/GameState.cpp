@@ -5,7 +5,7 @@
 GameState::GameState()
 {
 	this->ball.position = Vec2(0, 0);
-	this->ball.velocity = Vec2(1, 0);
+	this->ball.velocity = Vec2(0, 1);
 	this->ball.radius = 0.25f;
 	AddPlayer(1, "vasuri");
 	AddPlayer(2, "oikuri");

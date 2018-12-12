@@ -61,7 +61,7 @@ void GameState::Tick()
 	float tick = millis.count();
 	UpdatePlayerPos(tick);
 	UpdateBallPos(tick);
-	std::cout << ball.position.x << " " << ball.position.y << std::endl;
+	//std::cout << ball.position.x << " " << ball.position.y << std::endl;
 }
 
 void GameState::UpdateBallPos(double tick)

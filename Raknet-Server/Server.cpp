@@ -50,7 +50,7 @@ void Server::ServerUpdate()
 	if ((float)Delta.count() > TimeInterval)
 	{
 		Delta120 += chrono::milliseconds((int)TimeInterval);
-
+		RequestFromAll(PLAYER_INPUT);
 		serverLogic.Tick();
 		BroadcastBallPosition();
 		for (Packet = Peer->Receive(); Packet; Packet = Peer->Receive())
@@ -135,10 +135,13 @@ void Server::ReadPlayerInput(RakNet::Packet* packet)
 {
 	RakNet::BitStream bs(packet->data, packet->length, false);
 	bs.IgnoreBytes(sizeof(RakNet::MessageID));
-	Vec2 input;
-	bs.Read(input.x);
-	bs.Read(input.y);
-	serverLogic.ProcessInput(packet->guid.ToUint32(packet->guid), input);
+
+	int x = 0;
+	int y = 0;
+	bs.Read(x);
+	bs.Read(y);
+
+	//serverLogic.ProcessInput(packet->guid.ToUint32(packet->guid), {x,y});
 }
 
 void Server::SendResponse(RakNet::SystemAddress sys, CustomMessages responseID)
@@ -174,6 +177,6 @@ void Server::RequestFromAll(CustomMessages Requested)
 {
 	RakNet::BitStream bs;
 	bs.Write((RakNet::MessageID)Requested);
-	Peer->Send(&bs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0);
+	Peer->Send(&bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true, 0);
 }
 

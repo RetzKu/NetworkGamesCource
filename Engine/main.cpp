@@ -148,18 +148,34 @@ int SceneLoop(Game* GameObject)
 	//GameObject->Layers[0]->add(new Label("Test Label", 1, 0, vec4(0.5, 0.5, 0, 1)));
 
 	Sprite bekkas = Sprite(0, 0, 10, 10, new Texture("Pekka2.bmp"), false);
+	Sprite Pelaaja = Sprite(0, 0, 5, 5, new Texture("Pekka2.bmp"), false);
+
+	int* y = new int;
+	int* x = new int;
 	GameObject->Layers[0]->add(&bekkas);
+	GameObject->Layers[0]->add(&Pelaaja);
+
+	GameObject->connection->SetVar(PLAYER_INPUT, std::vector<int*>{x,y});
 
 	while (!window->closed())
 	{
 		/*Main Loop*/
+		if (window->isKeyPressed(GLFW_KEY_W)) { *x = 1; }
+		else { *x = 0; }
+
+		if (window->isKeyPressed(GLFW_KEY_S)) { *y = 1; }
+		else { *y = 0; }
+
 		GameObject->connection->Update();
+
+
+
 		bekkas.position = { GameObject->connection->ballX, GameObject->connection->ballY , 0};
+
 		//std::cout << GameObject->connection->ballX << " " << GameObject->connection->ballY << std::endl;
 
 		window->clear();
 
-		GameObject->ControlFunktionality->GetCameraMovement();
 		GameObject->RenderLayers(); //Renderoi kaikki layerit jotka on annettu Gameobject classille
 		window->update(); //ikkunan swap
 	}

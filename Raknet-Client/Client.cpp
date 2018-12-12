@@ -96,6 +96,10 @@ void Client::ClientConnectionUpdate(RakNet::Packet* Packet)
 	case BALL_UPDATE:
 		ProcessBallUpdate(Packet);
 		break;
+	case PLAYER_INPUT:
+		CheckForVar(PLAYER_INPUT);
+		CONSOLE("Server is requesting input update");
+		break;
 	}
 }
 
